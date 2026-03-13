@@ -1000,3 +1000,43 @@ def convert_bi_flavor(code: str, source: str, target: str) -> Dict[str, Any]:
         }
     except Exception as e:
         return {"success": False, "error": str(e), "traceback": traceback.format_exc()}
+
+def nested_effects_analysis(
+    language: str, trace_name: str, top_group: str, sub_group: str
+) -> Dict[str, Any]:
+    """
+    Generates a post-fitting analysis plan and code for nested 
+    varying effects using the BayesInference package and ArviZ.
+    """
+    try:
+        prompt = f"""
+    Role: Act as an expert Bayesian statistician and data scientist.
+
+    Context: I have already fitted a Bayesian multilevel model using the `BayesInference` (BI) library in {language}. 
+    The model includes nested varying effects (random effects), specifically `{sub_group}` nested within `{top_group}`. 
+    The fitted model object/trace is stored as an ArviZ InferenceData object named `{trace_name}`.
+
+    Task: I need to perform a comprehensive post-fitting analysis to compare the varying effects *between* the {top_group} and *within* the {top_group} (across the nested {sub_group}) using ArviZ and standard data manipulation libraries.
+
+    Please generate the {language} code and explain the statistical reasoning to accomplish the following:
+
+    1. Extract Posterior Draws: Show how to extract the posterior samples for the varying intercepts at both the {top_group} and the nested {sub_group} level from the ArviZ InferenceData object.
+    2. Variance Partitioning (ICC/VPC): Calculate the variance partition coefficients.
+    3. Visualize the Varying Effects (Shrinkage): Create caterpillar plots using `az.plot_forest()` with 89% credible intervals. Group the forest plot by the top-level hierarchy.
+    4. Posterior Contrasts: Calculate the posterior probability of a specific contrast between two different `{sub_group}` entities nested in the same `{top_group}`.
+
+    Constraints: 
+    * Please use idiomatic code for BayesInference and ArviZ (az). 
+    * Account for non-centered parameterization (offsets) in the extraction math.
+    * If using R or Julia, ensure the ArviZ syntax is properly adapted to the respective environment.
+    """
+        return {
+            "success": True,
+            "prompt": prompt,
+            "language": language,
+            "trace_name": trace_name,
+            "top_group": top_group,
+            "sub_group": sub_group,
+        }
+    except Exception as e:
+        return {"success": False, "error": str(e), "traceback": traceback.format_exc()}

@@ -407,6 +407,32 @@ async def list_tools() -> list[Tool]:
                 "required": ["bi_code"],
             },
         ),
+        Tool(
+            name="nested_effects_analysis",
+            description="Generates a post-fitting analysis plan and code for nested varying effects using the BayesInference package and ArviZ.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "language": {
+                        "type": "string",
+                        "description": "Programming language (python, r, julia)",
+                    },
+                    "trace_name": {
+                        "type": "string",
+                        "description": "Name of the ArviZ InferenceData object",
+                    },
+                    "top_group": {
+                        "type": "string",
+                        "description": "Name of the top-level grouping variable",
+                    },
+                    "sub_group": {
+                        "type": "string",
+                        "description": "Name of the nested grouping variable",
+                    },
+                },
+                "required": ["language", "trace_name", "top_group", "sub_group"],
+            },
+        ),
     ]
 
 
@@ -442,6 +468,8 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
             result = tools.convert_bi_flavor(**arguments)
         elif name == "validate_bi_model":
             result = tools.validate_bi_model(**arguments)
+        elif name == "nested_effects_analysis":
+            result = tools.nested_effects_analysis(**arguments)
         else:
             result = {"success": False, "error": f"Unknown tool: {name}"}
 
