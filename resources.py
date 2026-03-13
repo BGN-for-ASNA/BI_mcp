@@ -16,62 +16,83 @@ DATASETS = {
         "name": "Howell1",
         "description": "Demographic data from the Dobe area !Kung San people. Contains height, weight, age, and sex for 544 individuals.",
         "features": ["height", "weight", "age", "male"],
-        "samples": 544
+        "samples": 544,
     },
     "milk": {
         "name": "Primate Milk Composition",
         "description": "Milk composition data for various primate species including calories, fat, protein, lactose percentages.",
-        "features": ["clade", "species", "kcal.per.g", "perc.fat", "perc.protein", "perc.lactose", "mass", "neocortex.perc"],
-        "samples": 29
+        "features": [
+            "clade",
+            "species",
+            "kcal.per.g",
+            "perc.fat",
+            "perc.protein",
+            "perc.lactose",
+            "mass",
+            "neocortex.perc",
+        ],
+        "samples": 29,
     },
     "iris": {
         "name": "Iris Dataset",
         "description": "Classic iris dataset with sepal and petal measurements for three species.",
-        "features": ["sepal_length", "sepal_width", "petal_length", "petal_width", "species"],
-        "samples": 150
+        "features": [
+            "sepal_length",
+            "sepal_width",
+            "petal_length",
+            "petal_width",
+            "species",
+        ],
+        "samples": 150,
     },
     "chimpanzees": {
         "name": "Chimpanzee Behavioral Data",
         "description": "Data from experiments on chimpanzee behavior and social learning.",
         "features": ["Various behavioral and experimental outcome measures"],
-        "samples": "Multiple observations"
+        "samples": "Multiple observations",
     },
     "reedfrogs": {
         "name": "Reed Frogs",
         "description": "Experimental data on reed frog tadpole survival under various conditions.",
         "features": ["Survival rates under different predation and density conditions"],
-        "samples": 48
+        "samples": 48,
     },
     "tulips": {
         "name": "Tulips Growth Experiment",
         "description": "Experimental data on tulip growth under different water and shade treatments.",
         "features": ["blooms", "water", "shade"],
-        "samples": 27
+        "samples": 27,
     },
     "ucbadmit": {
         "name": "UC Berkeley Admissions",
         "description": "Famous dataset illustrating Simpson's paradox. Graduate admissions data by department and gender.",
         "features": ["dept", "applicant.gender", "admit", "reject"],
-        "samples": 12
+        "samples": 12,
     },
     "trolley": {
         "name": "Trolley Problem",
         "description": "Moral judgment experiment data using trolley problem scenarios.",
         "features": ["Various experimental conditions and moral judgment responses"],
-        "samples": "Large dataset"
+        "samples": "Large dataset",
     },
     "elephants": {
         "name": "Elephants",
         "description": "Data from experiments on elephant matriarch age and survival.",
         "features": ["age", "matriarch"],
-        "samples": 10
+        "samples": 10,
     },
     "waffle_divorce": {
         "name": "Waffle House and Divorce",
         "description": "State-level data on divorce rates, marriage rates, and Waffle House locations.",
-        "features": ["Location", "Divorce", "Marriage", "MedianAgeMarriage", "WaffleHouses"],
-        "samples": 50
-    }
+        "features": [
+            "Location",
+            "Divorce",
+            "Marriage",
+            "MedianAgeMarriage",
+            "WaffleHouses",
+        ],
+        "samples": 50,
+    },
 }
 
 
@@ -88,13 +109,11 @@ QUARTO_DOCS = {
     # Getting Started
     "getting_started": "get started.qmd",
     "introduction": "0.Introduction.qmd",
-    
     # Basic Regression Models
     "linear_regression": "1. Linear Regression for continuous variable.qmd",
     "multiple_regression": "2. Multiple continuous Variables.qmd",
     "interactions": "3. Interaction between continuous variables.qmd",
     "categorical_predictors": "4. Categorical variable.qmd",
-    
     # GLM Models
     "binomial_model": "5. Binomial model.qmd",
     "beta_binomial": "6. Beta binomial model.qmd",
@@ -105,7 +124,6 @@ QUARTO_DOCS = {
     "dirichlet_model": "10. Dirichlet model.qmd",
     "multinomial_model": "10. Multinomial model.qmd",
     "zero_inflated": "11. Zero inflated.qmd",
-    
     # Advanced Models
     "survival_analysis": "12. Survival analysis.qmd",
     "varying_intercepts": "13. Varying intercepts.qmd",
@@ -113,25 +131,21 @@ QUARTO_DOCS = {
     "gaussian_processes": "15. Gaussian processes.qmd",
     "measurement_error": "16. Measuring error.qmd",
     "missing_data": "17. Missing data.qmd",
-    
     # Machine Learning
     "pca": "19. PCA.qmd",
     "gmm": "20. GMM.qmd",
     "dpmm": "21. DPMM.qmd",
     "bnn": "27. BNN.qmd",
-    
     # Network Models
     "network_model": "22. Network model.qmd",
     "network_block_model": "23. Network with block model.qmd",
     "network_biases": "24. Network control for data collection biases.qmd",
     "network_metrics": "25. Network Metrics.qmd",
     "nbda": "26. Network Based Diffusion analysis (wip).qmd",
-    
     # API Reference
-    "api_distributions": "api_dist.qmd",
-    "api_diagnostics": "api_diag.qmd",
     "api_manipulation": "api_manip.qmd",
     "mcp_usage_guide": "mcp_usage_guide.md",
+    "translation_guide": "translation_guide.md",
 }
 
 
@@ -291,24 +305,24 @@ def model(y, group_idx, num_groups):
 
 ### 3. Diagnostics
 Call `get_summary(model_id='default')`.
-"""
+""",
 }
 
 
 def load_quarto_file(filename: str) -> str:
     """
     Load a Quarto documentation file.
-    
+
     Args:
         filename: Name of the Quarto file
-        
+
     Returns:
         Content of the file or error message
     """
     try:
         filepath = DOCS_PATH / filename
         if filepath.exists():
-            with open(filepath, 'r', encoding='utf-8') as f:
+            with open(filepath, "r", encoding="utf-8") as f:
                 return f.read()
         else:
             return f"Documentation file not found: {filename}"
@@ -319,16 +333,16 @@ def load_quarto_file(filename: str) -> str:
 def get_dataset_resource(dataset_name: str) -> str:
     """
     Get dataset information as a resource.
-    
+
     Args:
         dataset_name: Name of the dataset
-        
+
     Returns:
         JSON string with dataset information
     """
     if dataset_name not in DATASETS:
         raise ValueError(f"Unknown dataset: {dataset_name}")
-    
+
     return json.dumps(DATASETS[dataset_name], indent=2)
 
 
@@ -336,24 +350,25 @@ def get_docs_resource(doc_name: str) -> str:
     """
     Get documentation as a resource.
     Tries to load from Quarto files first, falls back to hardcoded docs.
-    
+
     Args:
         doc_name: Name of the documentation
-        
+
     Returns:
         Documentation string
     """
     # Try to load from Quarto file
     if doc_name in QUARTO_DOCS:
         content = load_quarto_file(QUARTO_DOCS[doc_name])
-        if not content.startswith("Documentation file not found") and \
-           not content.startswith("Error loading documentation"):
+        if not content.startswith(
+            "Documentation file not found"
+        ) and not content.startswith("Error loading documentation"):
             return content
-    
+
     # Fall back to hardcoded documentation
     if doc_name in FALLBACK_DOCS:
         return FALLBACK_DOCS[doc_name]
-    
+
     raise ValueError(f"Unknown documentation: {doc_name}")
 
 
@@ -372,7 +387,7 @@ def list_available_docs() -> List[str]:
 def get_docs_by_category() -> Dict[str, List[str]]:
     """
     Get documentation organized by category.
-    
+
     Returns:
         Dictionary mapping categories to lists of doc names
     """
@@ -380,13 +395,14 @@ def get_docs_by_category() -> Dict[str, List[str]]:
         "Getting Started": [
             "getting_started",
             "introduction",
-            "mcp_usage_guide"
+            "mcp_usage_guide",
+            "translation_guide",
         ],
         "Basic Regression": [
             "linear_regression",
             "multiple_regression",
             "interactions",
-            "categorical_predictors"
+            "categorical_predictors",
         ],
         "Generalized Linear Models": [
             "binomial_model",
@@ -397,7 +413,7 @@ def get_docs_by_category() -> Dict[str, List[str]]:
             "categorical_outcomes",
             "dirichlet_model",
             "multinomial_model",
-            "zero_inflated"
+            "zero_inflated",
         ],
         "Advanced Models": [
             "survival_analysis",
@@ -405,26 +421,17 @@ def get_docs_by_category() -> Dict[str, List[str]]:
             "varying_slopes",
             "gaussian_processes",
             "measurement_error",
-            "missing_data"
+            "missing_data",
         ],
-        "Machine Learning": [
-            "pca",
-            "gmm",
-            "dpmm",
-            "bnn"
-        ],
+        "Machine Learning": ["pca", "gmm", "dpmm", "bnn"],
         "Network Models": [
             "network_model",
             "network_block_model",
             "network_biases",
             "network_metrics",
-            "nbda"
+            "nbda",
         ],
-        "API Reference": [
-            "api_distributions",
-            "api_diagnostics",
-            "api_manipulation"
-        ]
+        "API Reference": ["api_distributions", "api_diagnostics", "api_manipulation"],
     }
 
 
@@ -434,7 +441,7 @@ def get_stan_conversion_examples() -> str:
     """
     try:
         if STAN_EXAMPLES_PATH.exists():
-            with open(STAN_EXAMPLES_PATH, 'r', encoding='utf-8') as f:
+            with open(STAN_EXAMPLES_PATH, "r", encoding="utf-8") as f:
                 return f.read()
         return json.dumps({"error": "Stan examples file not found."})
     except Exception as e:
@@ -447,7 +454,7 @@ def get_stan_conversion_example(example_id: str) -> str:
     """
     try:
         if STAN_EXAMPLES_PATH.exists():
-            with open(STAN_EXAMPLES_PATH, 'r', encoding='utf-8') as f:
+            with open(STAN_EXAMPLES_PATH, "r", encoding="utf-8") as f:
                 examples = json.load(f)
                 for ex in examples:
                     if ex.get("id") == example_id:
@@ -464,9 +471,8 @@ def get_stan_semantics() -> str:
     """
     try:
         if STAN_SEMANTICS_PATH.exists():
-            with open(STAN_SEMANTICS_PATH, 'r', encoding='utf-8') as f:
+            with open(STAN_SEMANTICS_PATH, "r", encoding="utf-8") as f:
                 return f.read()
         return "Stan semantics file not found."
     except Exception as e:
         return f"Error loading Stan semantics: {str(e)}"
-

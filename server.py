@@ -22,7 +22,7 @@ app = Server("bayesinference-server")
 async def list_resources() -> list[Resource]:
     """List available resources (datasets and documentation)."""
     resource_list = []
-    
+
     # Add dataset resources
     for dataset_name in resources.list_available_datasets():
         dataset_info = resources.DATASETS[dataset_name]
@@ -31,33 +31,33 @@ async def list_resources() -> list[Resource]:
                 uri=f"dataset://{dataset_name}",
                 name=f"Dataset: {dataset_info['name']}",
                 mimeType="application/json",
-                description=dataset_info['description']
+                description=dataset_info["description"],
             )
         )
-    
+
     # Add documentation resources organized by category
     docs_by_category = resources.get_docs_by_category()
-    
+
     for category, doc_names in docs_by_category.items():
         for doc_name in doc_names:
             # Create descriptive names from doc_name
-            display_name = doc_name.replace('_', ' ').title()
+            display_name = doc_name.replace("_", " ").title()
             resource_list.append(
                 Resource(
                     uri=f"docs://{doc_name}",
                     name=f"[{category}] {display_name}",
                     mimeType="text/markdown",
-                    description=f"BayesInference {category}: {display_name}"
+                    description=f"BayesInference {category}: {display_name}",
                 )
             )
-    
+
     # Add Stan/BI conversion resources
     resource_list.append(
         Resource(
             uri="bi://stan_conversion_examples",
             name="Stan to BI Conversion Examples",
             mimeType="application/json",
-            description="A collection of paired Stan and BI models demonstrating semantic equivalence."
+            description="A collection of paired Stan and BI models demonstrating semantic equivalence.",
         )
     )
     resource_list.append(
@@ -65,35 +65,35 @@ async def list_resources() -> list[Resource]:
             uri="bi://stan_semantics",
             name="Stan to BI Semantic Mapping",
             mimeType="text/yaml",
-            description="Formal specification defining how Stan blocks map to BI API calls."
+            description="Formal specification defining how Stan blocks map to BI API calls.",
         )
     )
-    
+
     return resource_list
 
 
 @app.read_resource()
 async def read_resource(uri: str) -> str:
     """Read a specific resource by URI."""
-    
+
     if uri.startswith("dataset://"):
         dataset_name = uri.replace("dataset://", "")
         return resources.get_dataset_resource(dataset_name)
-    
+
     elif uri.startswith("docs://"):
         doc_name = uri.replace("docs://", "")
         return resources.get_docs_resource(doc_name)
-    
+
     elif uri == "bi://stan_conversion_examples":
         return resources.get_stan_conversion_examples()
-        
+
     elif uri.startswith("bi://stan_conversion_examples/"):
         example_id = uri.replace("bi://stan_conversion_examples/", "")
         return resources.get_stan_conversion_example(example_id)
-        
+
     elif uri == "bi://stan_semantics":
         return resources.get_stan_semantics()
-        
+
     else:
         raise ValueError(f"Unknown resource URI: {uri}")
 
@@ -112,20 +112,20 @@ async def list_tools() -> list[Tool]:
                         "type": "string",
                         "enum": ["cpu", "gpu", "tpu"],
                         "description": "Computing platform to use",
-                        "default": "cpu"
+                        "default": "cpu",
                     },
                     "model_id": {
                         "type": "string",
                         "description": "Identifier for this model instance",
-                        "default": "default"
+                        "default": "default",
                     },
                     "rand_seed": {
                         "type": "boolean",
                         "description": "Whether to use random seed",
-                        "default": True
-                    }
-                }
-            }
+                        "default": True,
+                    },
+                },
+            },
         ),
         Tool(
             name="load_dataset",
@@ -135,16 +135,16 @@ async def list_tools() -> list[Tool]:
                 "properties": {
                     "dataset_name": {
                         "type": "string",
-                        "description": "Name of the dataset to load"
+                        "description": "Name of the dataset to load",
                     },
                     "as_dict": {
                         "type": "boolean",
                         "description": "Return as dictionary instead of string representation",
-                        "default": False
-                    }
+                        "default": False,
+                    },
                 },
-                "required": ["dataset_name"]
-            }
+                "required": ["dataset_name"],
+            },
         ),
         Tool(
             name="simulate_data",
@@ -154,27 +154,27 @@ async def list_tools() -> list[Tool]:
                 "properties": {
                     "code": {
                         "type": "string",
-                        "description": "Python code to generate data"
+                        "description": "Python code to generate data",
                     },
                     "model_id": {
                         "type": "string",
                         "description": "Model instance identifier",
-                        "default": "default"
+                        "default": "default",
                     },
                     "seed": {
                         "type": "integer",
                         "description": "Random seed",
-                        "default": 0
+                        "default": 0,
                     },
                     "platform": {
                         "type": "string",
                         "enum": ["cpu", "gpu", "tpu"],
                         "description": "Platform to use if model not initialized",
-                        "default": "cpu"
-                    }
+                        "default": "cpu",
+                    },
                 },
-                "required": ["code"]
-            }
+                "required": ["code"],
+            },
         ),
         Tool(
             name="fit_model",
@@ -184,40 +184,40 @@ async def list_tools() -> list[Tool]:
                 "properties": {
                     "model_code": {
                         "type": "string",
-                        "description": "Python code defining the model function (must define 'model' function)"
+                        "description": "Python code defining the model function (must define 'model' function)",
                     },
                     "data": {
                         "type": "object",
-                        "description": "Dictionary of data to pass to the model. Optional if data is pre-loaded into m.data_on_model."
+                        "description": "Dictionary of data to pass to the model. Optional if data is pre-loaded into m.data_on_model.",
                     },
                     "model_id": {
                         "type": "string",
                         "description": "Model instance identifier",
-                        "default": "default"
+                        "default": "default",
                     },
                     "num_warmup": {
                         "type": "integer",
                         "description": "Number of warmup iterations",
-                        "default": 500
+                        "default": 500,
                     },
                     "num_samples": {
                         "type": "integer",
                         "description": "Number of sampling iterations",
-                        "default": 500
+                        "default": 500,
                     },
                     "num_chains": {
                         "type": "integer",
                         "description": "Number of MCMC chains",
-                        "default": 1
+                        "default": 1,
                     },
                     "platform": {
                         "type": "string",
                         "enum": ["cpu", "gpu", "tpu"],
-                        "description": "Platform override if model not initialized"
-                    }
+                        "description": "Platform override if model not initialized",
+                    },
                 },
-                "required": ["model_code"]
-            }
+                "required": ["model_code"],
+            },
         ),
         Tool(
             name="get_summary",
@@ -228,20 +228,20 @@ async def list_tools() -> list[Tool]:
                     "model_id": {
                         "type": "string",
                         "description": "Model instance identifier",
-                        "default": "default"
+                        "default": "default",
                     },
                     "round_to": {
                         "type": "integer",
                         "description": "Number of decimal places",
-                        "default": 2
+                        "default": 2,
                     },
                     "hdi_prob": {
                         "type": "number",
                         "description": "HDI probability interval",
-                        "default": 0.89
-                    }
-                }
-            }
+                        "default": 0.89,
+                    },
+                },
+            },
         ),
         Tool(
             name="sample_posterior",
@@ -252,25 +252,25 @@ async def list_tools() -> list[Tool]:
                     "model_id": {
                         "type": "string",
                         "description": "Model instance identifier",
-                        "default": "default"
+                        "default": "default",
                     },
                     "num_samples": {
                         "type": "integer",
                         "description": "Number of samples to generate",
-                        "default": 1
+                        "default": 1,
                     },
                     "remove_obs": {
                         "type": "boolean",
                         "description": "Whether to remove observed data",
-                        "default": True
+                        "default": True,
                     },
                     "seed": {
                         "type": "integer",
                         "description": "Random seed",
-                        "default": 0
-                    }
-                }
-            }
+                        "default": 0,
+                    },
+                },
+            },
         ),
         Tool(
             name="get_diagnostics",
@@ -281,10 +281,10 @@ async def list_tools() -> list[Tool]:
                     "model_id": {
                         "type": "string",
                         "description": "Model instance identifier",
-                        "default": "default"
+                        "default": "default",
                     }
-                }
-            }
+                },
+            },
         ),
         Tool(
             name="create_simple_linear_model",
@@ -295,37 +295,37 @@ async def list_tools() -> list[Tool]:
                     "x_data": {
                         "type": "array",
                         "items": {"type": "number"},
-                        "description": "Predictor variable data"
+                        "description": "Predictor variable data",
                     },
                     "y_data": {
                         "type": "array",
                         "items": {"type": "number"},
-                        "description": "Response variable data"
+                        "description": "Response variable data",
                     },
                     "model_id": {
                         "type": "string",
                         "description": "Model instance identifier",
-                        "default": "default"
+                        "default": "default",
                     },
                     "num_warmup": {
                         "type": "integer",
                         "description": "Number of warmup iterations",
-                        "default": 500
+                        "default": 500,
                     },
                     "num_samples": {
                         "type": "integer",
                         "description": "Number of sampling iterations",
-                        "default": 500
+                        "default": 500,
                     },
                     "platform": {
                         "type": "string",
                         "enum": ["cpu", "gpu", "tpu"],
                         "description": "Platform to use",
-                        "default": "cpu"
-                    }
+                        "default": "cpu",
+                    },
                 },
-                "required": ["x_data", "y_data"]
-            }
+                "required": ["x_data", "y_data"],
+            },
         ),
         Tool(
             name="convert_stan_to_bi",
@@ -335,11 +335,63 @@ async def list_tools() -> list[Tool]:
                 "properties": {
                     "stan_code": {
                         "type": "string",
-                        "description": "The raw Stan model code to convert."
+                        "description": "The raw Stan model code to convert.",
                     }
                 },
-                "required": ["stan_code"]
-            }
+                "required": ["stan_code"],
+            },
+        ),
+        Tool(
+            name="convert_stan_to_bi_r",
+            description="Parses a Stan model and applies semantic mapping rules to generate an equivalent BI R model.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "stan_code": {
+                        "type": "string",
+                        "description": "The raw Stan model code to convert.",
+                    }
+                },
+                "required": ["stan_code"],
+            },
+        ),
+        Tool(
+            name="convert_stan_to_bi_julia",
+            description="Parses a Stan model and applies semantic mapping rules to generate an equivalent BI Julia model.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "stan_code": {
+                        "type": "string",
+                        "description": "The raw Stan model code to convert.",
+                    }
+                },
+                "required": ["stan_code"],
+            },
+        ),
+        Tool(
+            name="convert_bi_flavor",
+            description="Translates code between different BI flavors (Python, R, Julia).",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "description": "The BI source code to convert.",
+                    },
+                    "source": {
+                        "type": "string",
+                        "enum": ["python", "r", "julia"],
+                        "description": "Source flavor.",
+                    },
+                    "target": {
+                        "type": "string",
+                        "enum": ["python", "r", "julia"],
+                        "description": "Target flavor.",
+                    },
+                },
+                "required": ["code", "source", "target"],
+            },
         ),
         Tool(
             name="validate_bi_model",
@@ -349,19 +401,19 @@ async def list_tools() -> list[Tool]:
                 "properties": {
                     "bi_code": {
                         "type": "string",
-                        "description": "The BI Python code block to validate."
+                        "description": "The BI Python code block to validate.",
                     }
                 },
-                "required": ["bi_code"]
-            }
-        )
+                "required": ["bi_code"],
+            },
+        ),
     ]
 
 
 @app.call_tool()
 async def call_tool(name: str, arguments: Any) -> list[TextContent]:
     """Handle tool execution."""
-    
+
     try:
         # Route to appropriate tool function
         if name == "initialize_model":
@@ -382,41 +434,45 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
             result = tools.create_simple_linear_model(**arguments)
         elif name == "convert_stan_to_bi":
             result = tools.convert_stan_to_bi(**arguments)
+        elif name == "convert_stan_to_bi_r":
+            result = tools.convert_stan_to_bi_r(**arguments)
+        elif name == "convert_stan_to_bi_julia":
+            result = tools.convert_stan_to_bi_julia(**arguments)
+        elif name == "convert_bi_flavor":
+            result = tools.convert_bi_flavor(**arguments)
         elif name == "validate_bi_model":
             result = tools.validate_bi_model(**arguments)
         else:
-            result = {
-                "success": False,
-                "error": f"Unknown tool: {name}"
-            }
-        
+            result = {"success": False, "error": f"Unknown tool: {name}"}
+
         # Return result as text content
-        return [TextContent(
-            type="text",
-            text=json.dumps(result, indent=2, default=str)
-        )]
-        
+        return [
+            TextContent(type="text", text=json.dumps(result, indent=2, default=str))
+        ]
+
     except Exception as e:
         import traceback
-        return [TextContent(
-            type="text",
-            text=json.dumps({
-                "success": False,
-                "error": str(e),
-                "traceback": traceback.format_exc()
-            }, indent=2)
-        )]
+
+        return [
+            TextContent(
+                type="text",
+                text=json.dumps(
+                    {
+                        "success": False,
+                        "error": str(e),
+                        "traceback": traceback.format_exc(),
+                    },
+                    indent=2,
+                ),
+            )
+        ]
 
 
 async def main():
     """Run the MCP server."""
     # Run the server using stdio transport
     async with stdio_server() as (read_stream, write_stream):
-        await app.run(
-            read_stream,
-            write_stream,
-            app.create_initialization_options()
-        )
+        await app.run(read_stream, write_stream, app.create_initialization_options())
 
 
 if __name__ == "__main__":
